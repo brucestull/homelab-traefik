@@ -1,0 +1,23 @@
+# Static configuration (read once at startup).
+# Routing is dynamic: Docker labels (per app) + the file provider (dynamic/).
+
+entryPoints:
+  web:
+    address: ":80"
+
+providers:
+  docker:
+    exposedByDefault: false   # only containers with traefik.enable=true get routed
+    network: edge             # Traefik reaches app containers on this shared network
+    watch: true
+  file:
+    directory: /etc/traefik/dynamic
+    watch: true
+
+api:
+  dashboard: true             # on, but not routed/exposed yet (secured route added later)
+
+log:
+  level: INFO
+
+accessLog: {}

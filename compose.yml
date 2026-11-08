@@ -1,0 +1,18 @@
+# homelab-traefik — standalone edge router for one host.
+# Discovers apps that carry Traefik labels AND join the external `edge` network.
+services:
+  traefik:
+    image: "traefik:v3.7"
+    restart: unless-stopped
+    ports:
+      - "80:80"            # HTTP edge (HTTPS :443 added later)
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"   # read-only discovery
+      - "./traefik.yml:/etc/traefik/traefik.yml:ro"       # static config
+      - "./dynamic:/etc/traefik/dynamic:ro"               # file-provider routes
+    networks:
+      - edge
+
+networks:
+  edge:
+    external: true          # created once on the host: docker network create edge
